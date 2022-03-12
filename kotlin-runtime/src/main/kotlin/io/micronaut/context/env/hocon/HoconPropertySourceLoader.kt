@@ -109,7 +109,7 @@ class HoconPropertySourceLoaderImpl : PropertySourceLoader, Ordered {
     }
 
     override fun read(name: String?, input: InputStream?): MutableMap<String, Any> {
-        val config = ConfigFactory.parseReader(InputStreamReader(input, StandardCharsets.UTF_8))
+        val config = ConfigFactory.parseReader(InputStreamReader(input, StandardCharsets.UTF_8)).resolve()
         if (name != null) {
             val entrySet = config.entrySet()
             val map: MutableMap<String, Any> = LinkedHashMap()

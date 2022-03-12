@@ -1,5 +1,23 @@
 plugins {
+    id "org.gradle.maven-publish"
     id("micronaut-kotlin.module-conventions")
+    id "com.google.cloud.artifactregistry.gradle-plugin" version "2.1.5"
+}
+
+version = "3.2.1"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+    maven {
+        url "artifactregistry://australia-southeast1-maven.pkg.dev/foundation-268322/maven"
+    }
+    maven {
+        url "artifactregistry://australia-southeast1-maven.pkg.dev/foundation-268322/maven-release"
+    }
 }
 
 sourceCompatibility = 1.8
@@ -33,3 +51,25 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+publishing {
+    repositories {
+        maven {
+            def snapshotURL = uri("artifactregistry://australia-southeast1-maven.pkg.dev/foundation-268322/maven")
+            def releaseURL = uri("artifactregistry://australia-southeast1-maven.pkg.dev/foundation-268322/maven-release")
+            if (project.version.toString().endsWith("SNAPSHOT")) {
+                url = snapshotURL
+            } else {
+                url = releaseURL
+            }
+        }
+    }
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.remlyhq"
+            artifactId = "micronaut-kotlin-runtime"
+            from components.java
+        }
+    }
+}
+
